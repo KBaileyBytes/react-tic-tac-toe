@@ -1,12 +1,31 @@
 import { useState } from "react";
 import Player from "./components/Player";
 import GameBoard from "./components/GameBoard";
+import Log from "./components/Log";
+
+// Doesn't need to render inside App
+const deriveActivePlayer = (gameTurns) =>
+  gameTurns.length > 0 && gameTurns[0].player === "X" ? "O" : "X";
 
 function App() {
-  const [activePlayer, setActivePlayer] = useState("X");
+  const [gameTurns, setGameTurns] = useState([]);
 
-  function handleSquareClick() {
-    setActivePlayer((curActivePlayer) => (curActivePlayer === "X" ? "O" : "X"));
+  let currentPlayer = deriveActivePlayer(gameTurns);
+
+  function handleSquareClick(rowIndex, colIndex) {
+    setGameTurns((prevTurns) => {
+      currentPlayer = deriveActivePlayer(prevTurns);
+
+      const updatedTurns = [
+        {
+          square: { row: rowIndex, col: colIndex },
+          player: currentPlayer,
+        },
+        ...prevTurns,
+      ];
+
+      return updatedTurns;
+    });
   }
 
   return (
@@ -16,17 +35,17 @@ function App() {
           <Player
             initialName="Player 1"
             symbol="X"
-            isActive={activePlayer === "X"}
+            isActive={currentPlayer === "X"}
           />
           <Player
             initialName="Player 2"
             symbol="O"
-            isActive={activePlayer === "O"}
+            isActive={currentPlayer === "O"}
           />
         </ol>
-        <GameBoard onSquareClick={handleSquareClick} symbol={activePlayer} />
+        <GameBoard onSquareClick={handleSquareClick} turns={gameTurns} />
       </div>
-      LOG
+      <Log turns={gameTurns} />
     </main>
   );
 }

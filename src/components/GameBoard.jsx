@@ -1,11 +1,11 @@
-const initialGameBoard = [
+const INITIAL_GAME_BOARD = [
   [null, null, null],
   [null, null, null],
   [null, null, null],
 ];
 
 export default function GameBoard({ onSquareClick, turns }) {
-  let gameBoard = initialGameBoard;
+  let gameBoard = [...INITIAL_GAME_BOARD.map((row) => [...row])];
 
   for (const turn of turns) {
     gameBoard[turn.square.row][turn.square.col] = turn.player;
